@@ -10,7 +10,6 @@ library(rstatix)
 Aged_Data <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Aged Mouse Data 9-11-2026.xlsx")
 Aged_Data$Groups <- paste(Aged_Data$Group, Aged_Data$Drug, sep = "-")
 Aged_Data <- subset(Aged_Data, select = -c(LT, PH, ttPeak, ETP, `Vel Index`, `Start Tail`))
-Aged_Data <- Aged_Data[ , !(names(Aged_Data) %in% cols_to_drop)]
 
 # Start with Group Count
 table(Aged_Data$Groups)
@@ -20,16 +19,21 @@ table(Aged_Data$Group)
 ################################################################################
 # Boxplot of CitH3 Data for each group.
 ggplot(Aged_Data, aes(x = Groups, y = `CitH3 Counts`, fill = `Groups`))+
-  labs(title = " Histology CitH3 Counts per Group in Aged Mice",
+  labs(title = " Histology CitH3 Counts in Spleen per Group in Aged Mice",
        x = "Drug and Trauma Groups",
        y = "CitH3  Counts")+
   geom_boxplot(alpha = 0.7)+
   theme_classic()+
-  geom_pwc(method = "dunn_test", label = 'p.format', hide.ns = TRUE)+
+  geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
 
 # Get Counts of MPO categories per group
 print("MPO counts of spleen samples")
+Aged_Data$MPO[Aged_Data$MPO == "-"] <- 0
+Aged_Data$MPO[Aged_Data$MPO == "+"] <- 1
+Aged_Data$MPO[Aged_Data$MPO == "++"] <- 2
+Aged_Data$MPO[Aged_Data$MPO == "+++"] <- 3
+Aged_Data$MPO <- as.integer(Aged_Data$MPO)
 data <- Aged_Data %>% count(Groups, MPO)
 matrix_data <- Aged_Data %>% 
   count(Groups, MPO) %>% 
@@ -40,13 +44,13 @@ contingency_table <- as.data.frame(matrix_data)
 print(contingency_table)
 fisher.test(contingency_table)
 
-ggplot(data, aes(x = `Groups`, y = `n`, fill = `MPO`))+
-  geom_bar(position = "dodge", stat = "identity")+
-  labs(title = "MPO Counts in Aged Mice",
-       y = "MPO Counts")+
-  geom_text(aes(label = `n`),
-            position = position_dodge(width = 0.9),
-            vjust = -0.25)
+ggplot(Aged_Data, aes(x = Groups, y = `MPO`, fill = `Groups`))+
+  labs(title = " Histology MPO Counts in SPleen per Group in Aged Mice",
+       x = "Drug and Trauma Groups",
+       y = "MPO  Counts")+
+  geom_boxplot(alpha = 0.7)+
+  geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
+  theme_classic()
 
 ################################################################################
 # subset the CAT data
@@ -60,7 +64,7 @@ plot(ggplot(data = Aged_CAT_long, aes(x = variables, y = value, fill = factor(`G
        geom_boxplot()+
        labs(title = "Aged Mice CAT Data by Group")+
        theme_classic() +
-       geom_pwc(method = "dunn_test", label = 'p.format', hide.ns = TRUE)+
+       geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
        scale_y_continuous(expand = expansion(mult = c(0.05, 0.15))) +
        facet_wrap(~variables, scale = "free"))
 
@@ -82,7 +86,7 @@ ggplot(Aged_Data, aes(x = `Groups`, y = `[Nucleosome H3.1]-mean (ng/mL)`, fill =
   geom_boxplot(alpha = 0.7)+
   labs(title = "Aged Mice Volition Data by Group")+
   theme_classic()+
-  geom_pwc(method = "dunn_test", label = 'p.format', hide.ns = TRUE)+
+  geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
 
 # Kruskal Wallis test
