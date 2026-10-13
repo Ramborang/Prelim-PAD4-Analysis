@@ -62,6 +62,11 @@ kruskal.test(PAD4_Vol$`[Nucleosome H3.1]-mean (ng/mL)`~PAD4_Vol$Groups)
 pairwise.t.test(PAD4_Vol$`[Nucleosome H3.1]-mean (ng/mL)`,PAD4_Vol$Groups)
 
 ################################################################################
+PAD4_CAT_long <- PAD4_CAT_long %>%
+  mutate(Groups = fct_relevel(Groups, c('Sham-None', 'Sham-PAD4',
+                                        '3h-None', '3h-PAD4',
+                                        '72h-None', '72h-PAD4')))
+
 p <-ggplot(data = PAD4_CAT_long, aes(x = variables, y = value, fill = factor(`Groups`))) +
       geom_boxplot(linewidth = 0.5, outlier.size = 1)+
       #labs(title = "PAD4 Inhibitor Mice CAT Data by Group")+
