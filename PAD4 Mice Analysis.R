@@ -37,7 +37,7 @@ p<-ggplot(PAD4_Vol, aes(x = `Groups`, y = `[Nucleosome H3.1]-mean (ng/mL)`, fill
     x = Inf, y = -Inf, # Places it in the bottom right corner
     hjust = -0.1, vjust = -3,
     label = "p-value <= 0.05: *\np-value <= 0.01: **\np-value <= 0.001: ***\np-value <= 0.0001: ****",
-    fontface = "plain", size = 5, color = "black", bg = "white")+
+    fontface = "plain", size = 6, color = "black", bg = "white")+
   coord_cartesian(clip = "off")+
   #theme_classic()+
   geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
@@ -71,13 +71,11 @@ p <-ggplot(data = PAD4_CAT_long, aes(x = variables, y = value, fill = factor(`Gr
       geom_boxplot(linewidth = 0.5, outlier.size = 1)+
       #labs(title = "PAD4 Inhibitor Mice CAT Data by Group")+
       theme_classic(base_size = 24) +
-      geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
+      #geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
+      stat_pwc(method = "dunn_test", label = 'p.format', hide.ns = TRUE)+
       scale_y_continuous(expand = expansion(mult = c(0.05, 0.15))) +
       facet_wrap(~variables, scale = "free")+
-      coord_cartesian(clip = "off")+
-      theme_classic(base_size = 24)+
-      geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
-      scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
+      coord_cartesian(clip = "off")
       
 p + scale_fill_discrete(labels = c("Sham-None (n = 38)", "Sham-PAD4\nInhibitor (n = 12)",
                                '3h-None (n = 16)', '3h-PAD4\nInhibitor (n = 7)',
