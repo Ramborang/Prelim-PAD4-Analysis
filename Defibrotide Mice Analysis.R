@@ -8,9 +8,9 @@ library(rstatix)
 
 # We only have data for 3 hour defibrotide (we don't have any defibrotide without trauma)
 # Defibrotide Analysis including histology, and CAT data. The spreadsheet has 3 different tabs.
-Defib_Vol <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Defibrotide Initial Analysis.xlsx", sheet = 'Volition')
-Defib_CAT <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Defibrotide Initial Analysis.xlsx", sheet = 'CAT')
-Defib_Hist <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Defibrotide Initial Analysis.xlsx", sheet = 'Histology')
+Defib_Vol <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Defibrotide Initial Analysis - Copy.xlsx", sheet = 'Volition')
+Defib_CAT <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Defibrotide Initial Analysis - Copy.xlsx", sheet = 'CAT')
+Defib_Hist <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Defibrotide Initial Analysis - Copy.xlsx", sheet = 'Histology')
 Defib_Lung <- read_excel("J:Park/Projects/Park Mouse Lab LLC/Defibrotide Initial Analysis.xlsx", sheet = 'Lung')
 
 # Begin with the Volition analysis
@@ -21,10 +21,11 @@ table(Defib_Vol$Groups)
 table(Defib_Vol$Group)
 table(Defib_Vol$Drug)
 Defib_Vol$Groups <- paste(Defib_Vol$Groups, " (n = ", Defib_Vol$Count, ")", sep = "")
+print(unique(Defib_Vol$Groups))
 
-Defib_Vol <- subset(Defib_Vol, Groups %in% c('Sham-None (n = 32)', '72h-None (n = 15)', '72h-Defibrotide (n = 10)'))
+Defib_Vol <- subset(Defib_Vol, Groups %in% c('Sham-None (n = 35)', '72h-None (n = 28)', '72h-Defibrotide (n = 10)'))
 Defib_Vol <- Defib_Vol %>%
-  mutate(Groups = fct_relevel(Groups, c('Sham-None (n = 32)', '72h-None (n = 15)','72h-Defibrotide (n = 10)')))
+  mutate(Groups = fct_relevel(Groups, c('Sham-None (n = 35)', '72h-None (n = 28)','72h-Defibrotide (n = 10)')))
 
 # Create boxplots of Volition Data per group
 ggplot(Defib_Vol, aes(x = `Groups`, y = `[Nucleosome H3.1]-mean (ng/mL)`, fill = `Groups`))+

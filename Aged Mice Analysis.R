@@ -81,11 +81,22 @@ Aged_Vol <- subset(Aged_Data, select = c(Groups,`[Nucleosome H3.1]-mean (ng/mL)`
 Aged_Vol_long <- Aged_Vol %>%
   pivot_longer(-`Groups`, names_to = "variables", values_to = "value")
 
+Aged_Data <- Aged_Data %>%
+  mutate(Groups = fct_relevel(Groups, c('Sham-None',
+                                        '72h-Defibrotide', '72h-None')))
+
 # Boxplot of nucleosome data from Volition
 ggplot(Aged_Data, aes(x = `Groups`, y = `[Nucleosome H3.1]-mean (ng/mL)`, fill = `Groups`))+
-  geom_boxplot(alpha = 0.7)+
-  labs(title = "Aged Mice Volition Data by Group")+
-  theme_classic()+
+  geom_boxplot(alpha = 0.7, linewidth = 0.5)+
+  # labs(title = "Aged Mice Volition Data by Group")+
+  annotate(
+    "text", 
+    x = Inf, y = -Inf, # Places it in the bottom right corner
+    hjust = 0, vjust = -3.1,
+    label = "p-value <= 0.05: *\np-value <= 0.01: **\np-value <= 0.001: ***\np-value <= 0.0001: ****",
+    fontface = "plain", size = 6, color = "black", bg = "white")+
+  coord_cartesian(clip = "off")+
+  theme_classic(base_size = 20)+
   geom_pwc(method = "dunn_test", label = 'p.signif', hide.ns = TRUE, use.four.stars = TRUE)+
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
 
